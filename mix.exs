@@ -23,7 +23,14 @@ defmodule KeyCDN.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_doc, "~> 0.23.0", only: :dev}
+      {:hackney, "~> 1.17.0"},
+      {:telemetry, "~> 0.4.2"},
+      {:jason, "~> 1.2.2"},
+      {:ex_doc, "~> 0.23", only: [:dev], runtime: false},
+      {:inch_ex, "~> 2.0.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.5.4", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0.0", only: [:dev, :test], runtime: false},
+      {:bypass, "~> 2.1.0", only: :test}
     ]
   end
 

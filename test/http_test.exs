@@ -59,7 +59,7 @@ defmodule KeyCDN.HTTPTest do
   describe "request/3" do
     test "unauthorized response" do
       with_applicaton_config(:api_key, "junkmerchantid", fn ->
-        assert {:error, :forbidden} = HTTP.request(:get, "zones.json")
+        assert {:error, :unauthorized} = HTTP.request(:get, "zones.json")
       end)
     end
   end
@@ -103,7 +103,9 @@ defmodule KeyCDN.HTTPTest do
           caller: self()
         })
 
-        HTTP.request(:post, path, %{})
+        with_applicaton_config(:api_key, "the_private_key", fn ->
+          HTTP.request(:post, path, %{})
+        end)
 
         assert_receive {:event, [:keycdn, :request, :start], %{system_time: _time},
                         %{method: :post, path: _path}}
@@ -131,14 +133,7 @@ defmodule KeyCDN.HTTPTest do
   end
 
   defp assert_config_error(key, fun) do
-    value = KeyCDN.get_env(key)
-
-    try do
-      Application.delete_env(:keycdn, key)
-      assert_raise ConfigError, "missing config for :#{key}", fun
-    after
-      KeyCDN.put_env(key, value)
-    end
+    assert_raise ConfigError, "missing config for :#{key}", fun
   end
 
   defp with_applicaton_config(key, value, fun) do

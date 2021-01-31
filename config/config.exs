@@ -7,4 +7,5 @@ use Mix.Config
 
 # General application configuration
 config :keycdn,
-  api_key: {:system, "API_KEY"}
+  api_key: {:system, "api_key"},
+  url: "https://api.keycdn.com"

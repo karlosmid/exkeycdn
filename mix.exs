@@ -30,7 +30,8 @@ defmodule KeyCDN.MixProject do
       {:inch_ex, "~> 2.0.0", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.5.4", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0.0", only: [:dev, :test], runtime: false},
-      {:bypass, "~> 2.1.0", only: :test}
+      {:bypass, "~> 2.1.0", only: :test},
+      {:mox, "~> 1.0.0", only: :test}
     ]
   end
 

@@ -1,5 +1,5 @@
 defmodule KeyCDN.HTTPTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
 
   import ExUnit.CaptureLog
 
@@ -57,9 +57,21 @@ defmodule KeyCDN.HTTPTest do
   end
 
   describe "request/3" do
-    test "unauthorized response" do
-      with_applicaton_config(:api_key, "junkmerchantid", fn ->
-        assert {:error, :unauthorized} = HTTP.request(:get, "zones.json")
+    setup do
+      bypass = Bypass.open()
+
+      {:ok, bypass: bypass}
+    end
+
+    test "unauthorized response", %{bypass: bypass} do
+      Bypass.expect_once(bypass, "GET", "zones.json", fn conn ->
+        Plug.Conn.resp(conn, 401, ~s<"Unauthorized">)
+      end)
+
+      with_applicaton_config(:url, "http://localhost:#{bypass.port}", fn ->
+        with_applicaton_config(:api_key, "wrong key", fn ->
+          assert {:error, :unauthorized} = HTTP.request(:get, "zones.json")
+        end)
       end)
     end
   end

@@ -22,11 +22,9 @@ defmodule KeyCDN.HTTP do
   alias KeyCDN.{Decoder, Encoder}
 
   @type response ::
-          {:ok, map | {:error, atom}}
+          {:ok, map, list | {:error, atom}}
           | {:error, Error.t()}
           | {:error, binary}
-
-  @production_endpoint "https://api.keycdn.com"
 
   @headers [
     {"Accept", "application/json"},
@@ -109,10 +107,10 @@ defmodule KeyCDN.HTTP do
 
         :erlang.raise(kind, reason, __STACKTRACE__)
     else
-      {:ok, code, _headers, body} when code in 200..399 ->
+      {:ok, code, headers, body} when code in 200..399 ->
         duration = System.monotonic_time() - start_time
         emit_stop(duration, method, path, code)
-        {:ok, decode_body(body)}
+        {:ok, decode_body(body), headers}
 
       {:ok, 422, _headers, body} ->
         duration = System.monotonic_time() - start_time
@@ -158,7 +156,7 @@ defmodule KeyCDN.HTTP do
   @doc false
   @spec build_url(binary, map) :: binary
   def build_url(path, params \\ %{}) do
-    url = Keyword.fetch!(endpoints(), :production) <> "/" <> path
+    url = get_lazy_env([], :url) <> "/" <> path
 
     case params == %{} do
       true ->
@@ -170,7 +168,7 @@ defmodule KeyCDN.HTTP do
   end
 
   @doc false
-  @spec encode_body(binary | map) :: binary
+  @spec encode_body(binary | map) :: binary | {:error, binary}
   def encode_body(body) when body == "" or body == %{}, do: ""
   def encode_body(body), do: Encoder.encode(body)
 
@@ -219,10 +217,6 @@ defmodule KeyCDN.HTTP do
 
   defp resolve_error_response(%{"unprocessable_entity" => _}) do
     Error.new(%{message: "Unprocessable Entity"})
-  end
-
-  defp endpoints do
-    [production: @production_endpoint]
   end
 
   defp emit_start(method, path) do

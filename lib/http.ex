@@ -1,4 +1,4 @@
-defmodule KeyCDN.HTTP do
+defmodule ExKeyCDN.HTTP do
   @moduledoc """
   Base client for all server interaction, used by all endpoint specific
   modules.
@@ -6,11 +6,11 @@ defmodule KeyCDN.HTTP do
   This request wrapper coordinates the remote server, headers, authorization
   and SSL options.
 
-  Using `KeyCDN.HTTP` requires the presence of one config value:
+  Using `ExKeyCDN.HTTP` requires the presence of one config value:
 
-  * `api_key` - KeyCDN api key
+  * `api_key` - ExKeyCDN api key
 
-  Value must be set or a `KeyCDN.ConfigError` will be raised at
+  Value must be set or a `ExKeyCDN.ConfigError` will be raised at
   runtime. All those config values support the `{:system, "VAR_NAME"}` as a
   value - in which case the value will be read from the system environment with
   `System.get_env("VAR_NAME")`.
@@ -18,8 +18,8 @@ defmodule KeyCDN.HTTP do
 
   require Logger
 
-  alias KeyCDN.ErrorResponse, as: Error
-  alias KeyCDN.{Decoder, Encoder}
+  alias ExKeyCDN.ErrorResponse, as: Error
+  alias ExKeyCDN.{Decoder, Encoder}
 
   @type response ::
           {:ok, map, list | {:error, atom}}
@@ -28,7 +28,7 @@ defmodule KeyCDN.HTTP do
 
   @headers [
     {"Accept", "application/json"},
-    {"User-Agent", "KeyCDN Elixir/0.1"},
+    {"User-Agent", "ExKeyCDN Elixir/0.1"},
     {"X-ApiVersion", "1"},
     {"Content-Type", "application/x-www-form-urlencoded"}
   ]
@@ -50,13 +50,13 @@ defmodule KeyCDN.HTTP do
 
   @doc """
   Centralized request handling function. All convenience structs use this
-  function to interact with the KeyCDN servers. This function can be used
+  function to interact with the ExKeyCDN servers. This function can be used
   directly to supplement missing functionality.
 
   ## Example
 
-      defmodule MyApp.KeyCDN do
-        alias KeyCDN.HTTP
+      defmodule MyApp.ExKeyCDN do
+        alias ExKeyCDN.HTTP
 
         def zones(params \\ %{}) do
           HTTP.request(:get, "zones.json", params)
@@ -193,13 +193,13 @@ defmodule KeyCDN.HTTP do
   end
 
   def get_lazy_env(opts, key, default \\ nil) do
-    Keyword.get_lazy(opts, key, fn -> KeyCDN.get_env(key, default) end)
+    Keyword.get_lazy(opts, key, fn -> ExKeyCDN.get_env(key, default) end)
   end
 
   @doc false
   @spec build_options() :: [...]
   def build_options do
-    http_opts = KeyCDN.get_env(:http_options, [])
+    http_opts = ExKeyCDN.get_env(:http_options, [])
     [:with_body] ++ http_opts
   end
 
@@ -221,7 +221,7 @@ defmodule KeyCDN.HTTP do
 
   defp emit_start(method, path) do
     :telemetry.execute(
-      [:keycdn, :request, :start],
+      [:exkeycdn, :request, :start],
       %{system_time: System.system_time()},
       %{method: method, path: path}
     )
@@ -229,7 +229,7 @@ defmodule KeyCDN.HTTP do
 
   defp emit_exception(duration, method, path, error_data) do
     :telemetry.execute(
-      [:keycdn, :request, :exception],
+      [:exkeycdn, :request, :exception],
       %{duration: duration},
       %{method: method, path: path, error: error_data}
     )
@@ -237,7 +237,7 @@ defmodule KeyCDN.HTTP do
 
   defp emit_error(duration, method, path, error_reason) do
     :telemetry.execute(
-      [:keycdn, :request, :error],
+      [:exkeycdn, :request, :error],
       %{duration: duration},
       %{method: method, path: path, error: error_reason}
     )
@@ -245,7 +245,7 @@ defmodule KeyCDN.HTTP do
 
   defp emit_stop(duration, method, path, code) do
     :telemetry.execute(
-      [:keycdn, :request, :stop],
+      [:exkeycdn, :request, :stop],
       %{duration: duration},
       %{method: method, path: path, http_status: code}
     )

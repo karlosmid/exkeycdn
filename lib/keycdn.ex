@@ -1,11 +1,11 @@
-defmodule KeyCDN do
+defmodule ExKeyCDN do
   @moduledoc """
-  A native KeyCDN REST API client in Elixir.
+  A native ExKeyCDN REST API client in Elixir.
   Based on Braintree Elixir client:
   https://github.com/sorentwo/braintree-elixir
 
   For general reference please see:
-  https://www.keycdn.com/api
+  https://www.ExKeyCDN.com/api
   """
 
   defmodule ConfigError do
@@ -27,33 +27,33 @@ defmodule KeyCDN do
   end
 
   @doc """
-  Convenience function for retrieving keycdn specfic environment values, but
+  Convenience function for retrieving ExKeyCDN specfic environment values, but
   will raise an exception if values are missing.
 
   ## Example
 
-      iex> KeyCDN.get_env(:random_value)
-      ** (KeyCDN.ConfigError) missing config for :random_value
+      iex> ExKeyCDN.get_env(:random_value)
+      ** (ExKeyCDN.ConfigError) missing config for :random_value
 
-      iex> KeyCDN.get_env(:random_value, "random")
+      iex> ExKeyCDN.get_env(:random_value, "random")
       "random"
 
-      iex> Application.put_env(:keycdn, :random_value, "not-random")
-      ...> value = KeyCDN.get_env(:random_value)
-      ...> Application.delete_env(:keycdn, :random_value)
+      iex> Application.put_env(:exkeycdn, :random_value, "not-random")
+      ...> value = ExKeyCDN.get_env(:random_value)
+      ...> Application.delete_env(:exkeycdn, :random_value)
       ...> value
       "not-random"
 
       iex> System.put_env("RANDOM", "not-random")
-      ...> Application.put_env(:keycdn, :system_value, {:system, "RANDOM"})
-      ...> value = KeyCDN.get_env(:system_value)
+      ...> Application.put_env(:exkeycdn, :system_value, {:system, "RANDOM"})
+      ...> value = ExKeyCDN.get_env(:system_value)
       ...> System.delete_env("RANDOM")
       ...> value
       "not-random"
   """
   @spec get_env(atom, any) :: any
   def get_env(key, default \\ nil) do
-    case Application.fetch_env(:keycdn, key) do
+    case Application.fetch_env(:exkeycdn, key) do
       {:ok, {:system, var}} when is_binary(var) ->
         fallback_or_raise(var, System.get_env(var), default)
 
@@ -66,18 +66,18 @@ defmodule KeyCDN do
   end
 
   @doc """
-  Convenience function for setting `keycdn` application environment
+  Convenience function for setting `ExKeyCDN` application environment
   variables.
 
   ## Example
 
-      iex> KeyCDN.put_env(:thingy, "thing")
-      ...> KeyCDN.get_env(:thingy)
+      iex> ExKeyCDN.put_env(:thingy, "thing")
+      ...> ExKeyCDN.get_env(:thingy)
       "thing"
   """
   @spec put_env(atom, any) :: :ok
   def put_env(key, value) do
-    Application.put_env(:keycdn, key, value)
+    Application.put_env(:exkeycdn, key, value)
   end
 
   defp fallback_or_raise(key, nil, nil), do: raise(ConfigError, key)

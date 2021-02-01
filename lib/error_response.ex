@@ -1,14 +1,14 @@
-defmodule KeyCDN.ErrorResponse do
+defmodule ExKeyCDN.ErrorResponse do
   @moduledoc """
   A general purpose response wrapper that is built for any failed API
   response.
 
   See the following pages for details about the various responses:
 
-  * https://www.keycdn.com/api#errors
+  * https://www.ExKeyCDN.com/api#errors
   """
 
-  use KeyCDN.Construction
+  use ExKeyCDN.Construction
 
   @type t :: %__MODULE__{
           errors: map,

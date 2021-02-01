@@ -1,4 +1,4 @@
-defmodule KeyCDN.ZoneTest do
+defmodule ExKeyCDN.ZoneTest do
   use ExUnit.Case, async: true
 
   import Mox
@@ -8,17 +8,17 @@ defmodule KeyCDN.ZoneTest do
 
   test "List" do
     expected = [
-      zones: [%KeyCDN.Zone{}, %KeyCDN.Zone{}],
+      zones: [%ExKeyCDN.Zone{}, %ExKeyCDN.Zone{}],
       limits: [rate_limit_remaining: "60", rate_limit: "60"]
     ]
 
-    KeyCDN.MockZone
+    ExKeyCDN.MockZone
     |> expect(:list, fn -> expected end)
 
     assert zone().list() == expected
   end
 
   defp zone do
-    Application.get_env(:keycdn, :zone)
+    Application.get_env(:ExKeyCDN, :zone)
   end
 end

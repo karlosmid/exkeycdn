@@ -1,16 +1,16 @@
-# Exkeycdn
+# ExExKeyCDN
 
-Elixir client for https://www.keycdn.com/api
+Elixir client for https://www.ExKeyCDN.com/api
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `exkeycdn` to your list of dependencies in `mix.exs`:
+by adding `exExKeyCDN` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:exkeycdn, "~> 0.1.0"}
+    {:exExKeyCDN, "~> 0.1.0"}
   ]
 end
 ```
@@ -19,10 +19,10 @@ end
 
 ## Integration Testing
 
-Libraty is using behaviour which is a precondition for using Mox library. Here is example how to mock Zone list feature:
+Library is using behaviour which is a precondition for using Mox library. Here is example how to mock Zone list feature:
 
 ```elixir
-defmodule KeyCDN.ZoneTest do
+defmodule ExKeyCDN.ZoneTest do
   use ExUnit.Case, async: true
 
   import Mox
@@ -32,18 +32,18 @@ defmodule KeyCDN.ZoneTest do
 
   test "List" do
     expected = [
-      zones: [%KeyCDN.Zone{}, %KeyCDN.Zone{}],
+      zones: [%ExKeyCDN.Zone{}, %ExKeyCDN.Zone{}],
       limits: [rate_limit_remaining: "60", rate_limit: "60"]
     ]
 
-    KeyCDN.MockZone
+    ExKeyCDN.MockZone
     |> expect(:list, fn -> expected end)
 
     assert zone().list() == expected
   end
 
   defp zone do
-    Application.get_env(:keycdn, :zone)
+    Application.get_env(:exkeycdn, :zone)
   end
 end
 ```
@@ -51,11 +51,11 @@ end
 Add to your `test_helpers.exs`
 
 ```elixir
-Mox.defmock(KeyCDN.MockZone, for: KeyCDN.ZoneBehaviour)
-Application.put_env(:keycdn, :zone, KeyCDN.MockZone)
+Mox.defmock(ExKeyCDN.MockZone, for: ExKeyCDN.ZoneBehaviour)
+Application.put_env(:exkeycdn, :zone, ExKeyCDN.MockZone)
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/exkeycdn](https://hexdocs.pm/exkeycdn).
+be found at [https://hexdocs.pm/exExKeyCDN](https://hexdocs.pm/exExKeyCDN).
 

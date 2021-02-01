@@ -1,5 +1,5 @@
-defmodule KeyCDN.UtilTest do
+defmodule ExKeyCDN.UtilTest do
   use ExUnit.Case, async: true
 
-  doctest KeyCDN.Util
+  doctest ExKeyCDN.Util
 end

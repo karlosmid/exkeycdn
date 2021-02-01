@@ -1,4 +1,4 @@
-defmodule KeyCDN.Util do
+defmodule ExKeyCDN.Util do
   @moduledoc """
   General purpose utility functions.
   """
@@ -8,10 +8,10 @@ defmodule KeyCDN.Util do
 
   ## Examples
 
-      iex> KeyCDN.Util.underscorize("key-cdn")
+      iex> ExKeyCDN.Util.underscorize("key-cdn")
       "key_cdn"
 
-      iex> KeyCDN.Util.underscorize(:"key-cdn")
+      iex> ExKeyCDN.Util.underscorize(:"key-cdn")
       "key_cdn"
   """
   @spec underscorize(String.t() | atom) :: String.t()
@@ -24,10 +24,10 @@ defmodule KeyCDN.Util do
 
   ## Examples
 
-      iex> KeyCDN.Util.hyphenate("key_cdn")
+      iex> ExKeyCDN.Util.hyphenate("key_cdn")
       "key-cdn"
 
-      iex> KeyCDN.Util.hyphenate(:key_cdn)
+      iex> ExKeyCDN.Util.hyphenate(:key_cdn)
       "key-cdn"
   """
   @spec hyphenate(String.t() | atom) :: String.t()
@@ -41,11 +41,11 @@ defmodule KeyCDN.Util do
   string into an atom, whether it existed or not.
 
   For unknown maps with unknown keys this is potentially dangerous, but should
-  be fine when used with known KeyCDN endpoints.
+  be fine when used with known ExKeyCDN endpoints.
 
   ## Example
 
-      iex> KeyCDN.Util.atomize(%{"a" => 1, "b" => %{"c" => 2}})
+      iex> ExKeyCDN.Util.atomize(%{"a" => 1, "b" => %{"c" => 2}})
       %{a: 1, b: %{c: 2}}
   """
   @spec atomize(map) :: map

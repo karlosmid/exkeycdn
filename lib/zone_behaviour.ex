@@ -1,4 +1,4 @@
-defmodule KeyCDN.ZoneBehaviour do
+defmodule ExKeyCDN.ZoneBehaviour do
   @moduledoc """
   Zone Behaviour
   """

@@ -1,9 +1,9 @@
-defmodule KeyCDN.MixProject do
+defmodule ExKeyCDN.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :keycdn,
+      app: :exkeycdn,
       version: "0.1.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
@@ -37,7 +37,7 @@ defmodule KeyCDN.MixProject do
 
   defp description() do
     """
-    Library for KeyCDN API
+    Library for ExKeyCDN API
     """
   end
 
@@ -46,7 +46,7 @@ defmodule KeyCDN.MixProject do
       files: ["lib", "mix.exs", "README*", "LICENSE*"],
       maintainers: ["Karlo Šmid"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/karlosmid/exkeycdn"}
+      links: %{"GitHub" => "https://github.com/karlosmid/exExKeyCDN"}
     ]
   end
 end

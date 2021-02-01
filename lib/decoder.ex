@@ -1,4 +1,4 @@
-defmodule KeyCDN.Decoder do
+defmodule ExKeyCDN.Decoder do
   @moduledoc """
   Decoded JSON string
   """

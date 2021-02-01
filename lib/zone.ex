@@ -1,6 +1,6 @@
-defmodule KeyCDN.Zone do
+defmodule ExKeyCDN.Zone do
   @moduledoc """
-  Client api for https://www.keycdn.com/api#zones-api
+  Client api for https://www.ExKeyCDN.com/api#zones-api
   """
   defstruct name: "20 alfpanumeric charachters",
             status: "active",
@@ -33,20 +33,20 @@ defmodule KeyCDN.Zone do
             cachebr: "disabled",
             cachecookies: "disabled",
             cachestripcookies: "disabled",
-            cachexpullkey: "KeyCDN",
+            cachexpullkey: "ExKeyCDN",
             cachecanonical: "disabled",
             cacherobots: "disabled",
             cacheerrorpages: "disabled",
             dirlistt: "disabled"
 
-  @behaviour KeyCDN.ZoneBehaviour
-  alias KeyCDN.HTTP
+  @behaviour ExKeyCDN.ZoneBehaviour
+  alias ExKeyCDN.HTTP
 
-  @spec list :: {:error, binary | KeyCDN.ErrorResponse.t()} | {list(KeyCDN.Zone), map}
+  @spec list :: {:error, binary | ExKeyCDN.ErrorResponse.t()} | {list(ExKeyCDN.Zone), map}
   @doc """
   List Zones
   """
-  @impl KeyCDN.ZoneBehaviour
+  @impl ExKeyCDN.ZoneBehaviour
   def list do
     with {:ok, result, headers} <- HTTP.request(:get, "zones.json"),
          {true, result} <- successfull?(result),
@@ -68,7 +68,7 @@ defmodule KeyCDN.Zone do
   end
 
   defp map_to_struct(zones) do
-    Enum.map(zones, fn zone -> struct(KeyCDN.Zone, zone) end)
+    Enum.map(zones, fn zone -> struct(ExKeyCDN.Zone, zone) end)
   end
 
   defp get_limits(headers) do

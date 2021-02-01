@@ -1,14 +1,14 @@
-defmodule KeyCDN.Construction do
+defmodule ExKeyCDN.Construction do
   @moduledoc """
   This module provides a `use` macro to help convert raw HTTP responses into
   structs.
   """
 
-  import KeyCDN.Util, only: [atomize: 1]
+  import ExKeyCDN.Util, only: [atomize: 1]
 
   defmacro __using__(_) do
     quote do
-      alias KeyCDN.Construction
+      alias ExKeyCDN.Construction
 
       def new(params) when is_map(params) or is_list(params) do
         Construction.new(__MODULE__, params)

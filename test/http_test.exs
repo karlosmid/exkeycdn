@@ -1,9 +1,9 @@
-defmodule KeyCDN.HTTPTest do
+defmodule ExKeyCDN.HTTPTest do
   use ExUnit.Case, async: true
 
   import ExUnit.CaptureLog
 
-  alias KeyCDN.{ConfigError, HTTP}
+  alias ExKeyCDN.{ConfigError, HTTP}
 
   test "build_url/2 builds a url from application config without params" do
     assert HTTP.build_url("zones.json") =~
@@ -88,43 +88,32 @@ defmodule KeyCDN.HTTPTest do
       {:ok, bypass: bypass}
     end
 
-    test "emits a start and stop message on a successful request (2xx, 422, and other codes)", %{
+    test "emits a start and stop message on a successful request", %{
       bypass: bypass
     } do
-      Enum.each([200, 422, 500], fn code ->
-        path = "foo#{code}"
-
-        body =
-          case code do
-            200 ->
-              Jason.encode(%{name: "name"})
-
-            _ ->
-              Jason.encode(%{error: "message"})
-          end
-
-        Bypass.stub(bypass, "POST", "/junkmerchantid/foo#{code}", fn conn ->
-          Plug.Conn.resp(conn, code, body)
+        Bypass.expect_once(bypass, "GET", "zones.json", fn conn ->
+          Plug.Conn.resp(conn, 200, "ok")
         end)
 
-        :telemetry.attach("start event", [:keycdn, :request, :start], &echo_event/4, %{
+        :telemetry.attach("start event", [:exkeycdn, :request, :start], &echo_event/4, %{
           caller: self()
         })
 
-        :telemetry.attach("stop event", [:keycdn, :request, :stop], &echo_event/4, %{
+        :telemetry.attach("stop event", [:exkeycdn, :request, :stop], &echo_event/4, %{
           caller: self()
         })
 
-        with_applicaton_config(:api_key, "the_private_key", fn ->
-          HTTP.request(:post, path, %{})
+        with_applicaton_config(:url, "http://localhost:#{bypass.port}", fn ->
+        with_applicaton_config(:api_key, "wrong key", fn ->
+          HTTP.request(:get, "zones.json", %{})
         end)
-
-        assert_receive {:event, [:keycdn, :request, :start], %{system_time: _time},
-                        %{method: :post, path: _path}}
-
-        assert_receive {:event, [:keycdn, :request, :stop], %{duration: _time},
-                        %{method: :post, path: _path, http_status: _code}}
       end)
+
+        assert_receive {:event, [:exkeycdn, :request, :start], %{system_time: _time},
+                        %{method: :get, path: "zones.json"}}
+
+        assert_receive {:event, [:exkeycdn, :request, :stop], %{duration: _time},
+                        %{method: :get, path: "zones.json", http_status: _code}}
     end
   end
 
@@ -149,15 +138,15 @@ defmodule KeyCDN.HTTPTest do
   end
 
   defp with_applicaton_config(key, value, fun) do
-    original = KeyCDN.get_env(key, :none)
+    original = ExKeyCDN.get_env(key, :none)
 
     try do
-      KeyCDN.put_env(key, value)
+      ExKeyCDN.put_env(key, value)
       fun.()
     after
       case original do
-        :none -> Application.delete_env(:keycdn, key)
-        _ -> KeyCDN.put_env(key, original)
+        :none -> Application.delete_env(:exkeycdn, key)
+        _ -> ExKeyCDN.put_env(key, original)
       end
     end
   end

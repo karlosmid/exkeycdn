@@ -1,4 +1,4 @@
 ExUnit.start()
 
-Mox.defmock(KeyCDN.MockZone, for: KeyCDN.ZoneBehaviour)
-Application.put_env(:keycdn, :zone, KeyCDN.MockZone)
+Mox.defmock(ExKeyCDN.MockZone, for: ExKeyCDN.ZoneBehaviour)
+Application.put_env(:ExKeyCDN, :zone, ExKeyCDN.MockZone)

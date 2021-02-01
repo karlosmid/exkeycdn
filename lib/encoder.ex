@@ -1,4 +1,4 @@
-defmodule KeyCDN.Encoder do
+defmodule ExKeyCDN.Encoder do
   @moduledoc """
   Encodes map to application/x-www-form-urlencoded
   """

@@ -42,12 +42,12 @@ defmodule KeyCDN.Zone do
   @behaviour KeyCDN.ZoneBehaviour
   alias KeyCDN.HTTP
 
-  @spec list_zones :: {:error, binary | KeyCDN.ErrorResponse.t()} | {list(KeyCDN.Zone), map}
+  @spec list :: {:error, binary | KeyCDN.ErrorResponse.t()} | {list(KeyCDN.Zone), map}
   @doc """
   List Zones
   """
   @impl KeyCDN.ZoneBehaviour
-  def list_zones do
+  def list do
     with {:ok, result, headers} <- HTTP.request(:get, "zones.json"),
          {true, result} <- successfull?(result),
          zones <- map_to_struct(result["data"]["zones"]),

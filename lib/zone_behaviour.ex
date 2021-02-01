@@ -5,5 +5,5 @@ defmodule KeyCDN.ZoneBehaviour do
   @doc """
   Returns a list of Zones
   """
-  @callback list_zones() :: term
+  @callback list() :: term
 end

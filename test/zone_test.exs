@@ -18,6 +18,18 @@ defmodule ExKeyCDN.ZoneTest do
     assert zone().list() == expected
   end
 
+  test "view" do
+    expected = [
+      zones: %ExKeyCDN.Zone{},
+      limits: [rate_limit_remaining: "60", rate_limit: "60"]
+    ]
+
+    ExKeyCDN.MockZone
+    |> expect(:view, fn 1 -> expected end)
+
+    assert zone().view(1) == expected
+  end
+
   defp zone do
     Application.get_env(:ExKeyCDN, :zone)
   end

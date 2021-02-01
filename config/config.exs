@@ -8,4 +8,4 @@ use Mix.Config
 # General application configuration
 config :exkeycdn,
   api_key: {:system, "api_key"},
-  url: "https://api.ExKeyCDN.com"
+  url: "https://api.keycdn.com"

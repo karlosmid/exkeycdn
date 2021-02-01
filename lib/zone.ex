@@ -2,7 +2,8 @@ defmodule ExKeyCDN.Zone do
   @moduledoc """
   Client api for https://www.ExKeyCDN.com/api#zones-api
   """
-  defstruct name: "20 alfpanumeric charachters",
+  defstruct id: nil,
+            name: "20 alfpanumeric charachters",
             status: "active",
             type: "push",
             forcedownload: "disabled",
@@ -59,6 +60,21 @@ defmodule ExKeyCDN.Zone do
     end
   end
 
+  @doc """
+  View Zone
+  """
+  @impl ExKeyCDN.ZoneBehaviour
+  def view(id) do
+    with {:ok, result, headers} <- HTTP.request(:get, "zones/#{id}.json"),
+         {true, result} <- successfull?(result),
+         zones <- map_to_struct(result["data"]["zone"]),
+         limits <- get_limits(headers) do
+      [zones: zones, limits: limits]
+    else
+      {:error, message} -> {:error, message}
+      {false, result} -> result
+    end
+  end
   defp successfull?(result) do
     if result["status"] == "success" do
       {true, result}
@@ -67,9 +83,12 @@ defmodule ExKeyCDN.Zone do
     end
   end
 
-  defp map_to_struct(zones) do
-    Enum.map(zones, fn zone -> struct(ExKeyCDN.Zone, zone) end)
+  defp map_to_struct(zones) when is_list(zones) do
+    Enum.map(zones, fn zone -> map_to_struct(zone) end)
   end
+  defp map_to_struct(zone), do: struct(ExKeyCDN.Zone, map_to_keywordlist(zone))
+
+  defp map_to_keywordlist(map), do: Enum.map(map, fn {key, value} -> {String.to_atom(key), value} end)
 
   defp get_limits(headers) do
     rate_limit = List.keyfind(headers, "X-Rate-Limit-Limit", 0)

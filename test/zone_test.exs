@@ -83,6 +83,18 @@ defmodule ExKeyCDN.ZoneTest do
     assert zone().purge_cache(1) == expected
   end
 
+  test "purge url" do
+    expected = [
+      zone: :url_purged,
+      limits: [rate_limit_remaining: "60", rate_limit: "60"]
+    ]
+
+    ExKeyCDN.MockZone
+    |> expect(:purge_url, fn 1, ["a.css", "b.html"] -> expected end)
+
+    assert zone().purge_url(1, ["a.css", "b.html"]) == expected
+  end
+
   defp zone do
     Application.get_env(:ExKeyCDN, :zone)
   end

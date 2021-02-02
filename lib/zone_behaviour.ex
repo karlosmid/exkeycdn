@@ -61,4 +61,14 @@ defmodule ExKeyCDN.ZoneBehaviour do
                 {:zone, :cache_purged}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+
+  @doc """
+  Purge URL
+  """
+  @callback purge_url(integer(), list) ::
+              [
+                {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+                {:zone, :url_purged}
+              ]
+              | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 end

@@ -18,13 +18,13 @@ defmodule ExKeyCDN.HTTPTest do
   test "encode_body/1 converts the request body to xml" do
     params = %{company: "Soren", first_name: "Parker"}
 
-    assert HTTP.encode_body(params) ==
+    assert HTTP.encode_body(params, :form) ==
              ~s|company=Soren&first_name=Parker|
   end
 
   test "encode_body/1 ignores empty bodies" do
-    assert HTTP.encode_body("") == ""
-    assert HTTP.encode_body(%{}) == ""
+    assert HTTP.encode_body("", :form) == ""
+    assert HTTP.encode_body(%{}, :json) == ""
   end
 
   test "decode_body/1 converts json to map" do

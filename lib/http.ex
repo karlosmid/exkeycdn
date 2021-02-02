@@ -19,7 +19,7 @@ defmodule ExKeyCDN.HTTP do
   require Logger
 
   alias ExKeyCDN.ErrorResponse, as: Error
-  alias ExKeyCDN.{Decoder, Encoder}
+  alias ExKeyCDN.{Decoder, FormEncoder, JsonEncoder}
 
   @type response ::
           {:ok, map, list | {:error, atom}}
@@ -76,12 +76,27 @@ defmodule ExKeyCDN.HTTP do
             method,
             build_url(path, body),
             build_headers(),
-            encode_body(%{}),
+            encode_body(%{}, :form),
             build_options()
           )
 
+        :delete ->
+          case encode_body(body, :json) do
+            {:error, message} ->
+              {:error, message}
+
+            encoded_body ->
+              :hackney.request(
+                method,
+                build_url(path),
+                build_headers(),
+                encoded_body,
+                build_options()
+              )
+          end
+
         _ ->
-          case encode_body(body) do
+          case encode_body(body, :form) do
             {:error, message} ->
               {:error, message}
 
@@ -152,14 +167,15 @@ defmodule ExKeyCDN.HTTP do
         url
 
       false ->
-        url <> "?" <> Encoder.encode(params)
+        url <> "?" <> FormEncoder.encode(params)
     end
   end
 
   @doc false
-  @spec encode_body(binary | map) :: binary | {:error, binary}
-  def encode_body(body) when body == "" or body == %{}, do: ""
-  def encode_body(body), do: Encoder.encode(body)
+  @spec encode_body(binary | map, atom) :: binary | {:error, binary}
+  def encode_body(body, _type) when body == "" or body == %{}, do: ""
+  def encode_body(body, :form), do: FormEncoder.encode(body)
+  def encode_body(body, :json), do: JsonEncoder.encode(body)
 
   @doc false
   @spec decode_body(binary) :: map

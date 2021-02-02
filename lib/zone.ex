@@ -152,6 +152,12 @@ defmodule ExKeyCDN.Zone do
     end
   end
 
+  @spec purge_cache(integer()) ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:zone, :cache_purged}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """
   Purge Cache
   """
@@ -161,6 +167,27 @@ defmodule ExKeyCDN.Zone do
          {true, _result} <- successfull?(result),
          limits <- get_limits(headers) do
       [zone: :cache_purged, limits: limits]
+    else
+      {:error, message} -> {:error, message}
+      {false, message} -> {:error, message}
+    end
+  end
+
+  @spec purge_url(integer(), list) ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:zone, :url_purged}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+  @doc """
+  Purge URL
+  """
+  @impl ExKeyCDN.ZoneBehaviour
+  def purge_url(id, urls) do
+    with {:ok, result, headers} <- HTTP.request(:delete, "zones/purge/#{id}.json", %{urls: urls}),
+         {true, _result} <- successfull?(result),
+         limits <- get_limits(headers) do
+      [zone: :url_purged, limits: limits]
     else
       {:error, message} -> {:error, message}
       {false, message} -> {:error, message}

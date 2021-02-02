@@ -44,6 +44,21 @@ defmodule ExKeyCDN.ZoneTest do
     assert zone().add(zone) == expected
   end
 
+  test "edit" do
+    zone = %ExKeyCDN.Zone{name: "third_update"}
+    param = %{name: "third_update"}
+
+    expected = [
+      zone: zone,
+      limits: [rate_limit_remaining: "60", rate_limit: "60"]
+    ]
+
+    ExKeyCDN.MockZone
+    |> expect(:edit, fn 1, _param -> expected end)
+
+    assert zone().edit(1, param) == expected
+  end
+
   defp zone do
     Application.get_env(:ExKeyCDN, :zone)
   end

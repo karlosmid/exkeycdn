@@ -203,6 +203,51 @@ ExKeyCDN.Zone.add zone
 ]
 ```
 
+```elixir
+ExKeyCDN.Zone.edit(190710, %{expire: 1440})           
+[
+  zone: %ExKeyCDN.Zone{
+    cachekeyscheme: "disabled",
+    cachebr: "disabled",
+    name: "tribal",
+    type: "push",
+    cachecanonical: "disabled",
+    forcedownload: "disabled",
+    blockbadbots: "disabled",
+    cachehostheader: "disabled",
+    blockreferrer: "disabled",
+    securetokenkey: "",
+    cachemaxexpire: 1440,
+    forcessl: "disabled",
+    sslcert: "shared",
+    originurl: "https://example.com",
+    cachekeycookie: "alphanumeric32charachters",
+    cacheignorequerystring: "enabled",
+    status: "active",
+    expire: "1440",
+    cacheignorecachecontrol: "enabled",
+    cors: "disabled",
+    cacheerrorpages: "disabled",
+    cachexpullkey: "ExKeyCDN",
+    cachekeywebp: "disabled",
+    customsslkey: nil,
+    gzip: "disabled",
+    cachestripcookies: "disabled",
+    cachekeydevice: "disabled",
+    dirlistt: "disabled",
+    cachekeyhost: "disabled",
+    id: "190710",
+    securetoken: "disabled",
+    allowemptyreferrer: "enabled",
+    imgproc: "disabled",
+    originshield: "disabled",
+    cacherobots: "disabled",
+    cachecookies: "disabled",
+    customsslcert: nil
+  },
+  limits: [rate_limit_remaining: "60", rate_limit: "60"]
+  ```
+
 ## Integration Testing
 
 Library is using behaviour which is a precondition for using Mox library. Here is example how to mock Zone list feature:

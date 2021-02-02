@@ -5,15 +5,40 @@ defmodule ExKeyCDN.ZoneBehaviour do
   @doc """
   Returns a list of Zones
   """
-  @callback list() :: term
+  @callback list() ::
+              [
+                {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+                {:zones, list(ExKeyCDN.Zone)}
+              ]
+              | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 
   @doc """
   Returns zone based on zone id
   """
-  @callback view(integer) :: term
+  @callback view(integer) ::
+              [
+                {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+                {:zone, ExKeyCDN.Zone}
+              ]
+              | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 
   @doc """
   Add zone
   """
-  @callback add(ExKeyCDN.Zone) :: term
+  @callback add(ExKeyCDN.Zone.t()) ::
+              [
+                {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+                {:zone, ExKeyCDN.Zone}
+              ]
+              | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+
+  @doc """
+  Edit zone
+  """
+  @callback edit(integer, map) ::
+              [
+                {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+                {:zone, ExKeyCDN.Zone}
+              ]
+              | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 end

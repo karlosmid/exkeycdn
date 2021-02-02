@@ -109,6 +109,28 @@ defmodule ExKeyCDN.Zone do
     end
   end
 
+  @spec edit(integer(), map()) ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:zone, ExKeyCDN.Zone}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+  @doc """
+  Edit Zone
+  """
+  @impl ExKeyCDN.ZoneBehaviour
+  def edit(id, params) do
+    with {:ok, result, headers} <- HTTP.request(:put, "zones/#{id}.json", params),
+         {true, result} <- successfull?(result),
+         zone <- map_to_struct(result["data"]["zone"]),
+         limits <- get_limits(headers) do
+      [zone: zone, limits: limits]
+    else
+      {:error, message} -> {:error, message}
+      {false, message} -> {:error, message}
+    end
+  end
+
   defp successfull?(result) do
     if result["status"] == "success" do
       {true, result}

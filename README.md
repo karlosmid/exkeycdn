@@ -248,6 +248,11 @@ ExKeyCDN.Zone.edit(190710, %{expire: 1440})
   limits: [rate_limit_remaining: "60", rate_limit: "60"]
   ```
 
+```elixir
+ExKeyCDN.Zone.delete(190710)
+[zone: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
+```
+
 ## Integration Testing
 
 Library is using behaviour which is a precondition for using Mox library. Here is example how to mock Zone list feature:

@@ -41,4 +41,14 @@ defmodule ExKeyCDN.ZoneBehaviour do
                 {:zone, ExKeyCDN.Zone}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+
+  @doc """
+  Delete zone
+  """
+  @callback delete(integer()) ::
+              [
+                {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+                {:zone, []}
+              ]
+              | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 end

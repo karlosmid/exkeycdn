@@ -131,6 +131,27 @@ defmodule ExKeyCDN.Zone do
     end
   end
 
+  @spec delete(integer()) ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:zone, []}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+  @doc """
+  Delete Zone
+  """
+  @impl ExKeyCDN.ZoneBehaviour
+  def delete(id) do
+    with {:ok, result, headers} <- HTTP.request(:delete, "zones/#{id}.json"),
+         {true, _result} <- successfull?(result),
+         limits <- get_limits(headers) do
+      [zone: [], limits: limits]
+    else
+      {:error, message} -> {:error, message}
+      {false, message} -> {:error, message}
+    end
+  end
+
   defp successfull?(result) do
     if result["status"] == "success" do
       {true, result}

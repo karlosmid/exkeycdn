@@ -59,6 +59,18 @@ defmodule ExKeyCDN.ZoneTest do
     assert zone().edit(1, param) == expected
   end
 
+  test "delete" do
+    expected = [
+      zone: [],
+      limits: [rate_limit_remaining: "60", rate_limit: "60"]
+    ]
+
+    ExKeyCDN.MockZone
+    |> expect(:delete, fn 1 -> expected end)
+
+    assert zone().delete(1) == expected
+  end
+
   defp zone do
     Application.get_env(:ExKeyCDN, :zone)
   end

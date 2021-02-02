@@ -70,7 +70,7 @@ defmodule ExKeyCDN.HTTPTest do
 
       with_applicaton_config(:url, "http://localhost:#{bypass.port}", fn ->
         with_applicaton_config(:api_key, "wrong key", fn ->
-          assert {:error, :unauthorized, _headers} = HTTP.request(:get, "zones.json")
+          assert {:error, :unauthorized} = HTTP.request(:get, "zones.json")
         end)
       end)
     end

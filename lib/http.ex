@@ -112,10 +112,10 @@ defmodule ExKeyCDN.HTTP do
         emit_stop(duration, method, path, code)
         {:ok, decode_body(body), headers}
 
-      {:ok, code, headers, _body} when code in 401..504 ->
+      {:ok, code, _headers, _body} when code in 401..504 ->
         duration = System.monotonic_time() - start_time
         emit_stop(duration, method, path, code)
-        {:error, code_to_reason(code), headers}
+        {:error, code_to_reason(code)}
 
       {:error, reason} ->
         duration = System.monotonic_time() - start_time

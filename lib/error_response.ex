@@ -5,7 +5,7 @@ defmodule ExKeyCDN.ErrorResponse do
 
   See the following pages for details about the various responses:
 
-  * https://www.ExKeyCDN.com/api#errors
+  * https://www.keycdn.com/api#errors
   """
 
   use ExKeyCDN.Construction

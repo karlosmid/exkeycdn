@@ -70,7 +70,7 @@ defmodule ExKeyCDN.HTTPTest do
 
       with_applicaton_config(:url, "http://localhost:#{bypass.port}", fn ->
         with_applicaton_config(:api_key, "wrong key", fn ->
-          assert {:error, :unauthorized} = HTTP.request(:get, "zones.json")
+          assert {:error, :unauthorized, _headers} = HTTP.request(:get, "zones.json")
         end)
       end)
     end
@@ -91,29 +91,29 @@ defmodule ExKeyCDN.HTTPTest do
     test "emits a start and stop message on a successful request", %{
       bypass: bypass
     } do
-        Bypass.expect_once(bypass, "GET", "zones.json", fn conn ->
-          Plug.Conn.resp(conn, 200, "ok")
-        end)
+      Bypass.expect_once(bypass, "GET", "zones.json", fn conn ->
+        Plug.Conn.resp(conn, 200, "ok")
+      end)
 
-        :telemetry.attach("start event", [:exkeycdn, :request, :start], &echo_event/4, %{
-          caller: self()
-        })
+      :telemetry.attach("start event", [:exkeycdn, :request, :start], &echo_event/4, %{
+        caller: self()
+      })
 
-        :telemetry.attach("stop event", [:exkeycdn, :request, :stop], &echo_event/4, %{
-          caller: self()
-        })
+      :telemetry.attach("stop event", [:exkeycdn, :request, :stop], &echo_event/4, %{
+        caller: self()
+      })
 
-        with_applicaton_config(:url, "http://localhost:#{bypass.port}", fn ->
+      with_applicaton_config(:url, "http://localhost:#{bypass.port}", fn ->
         with_applicaton_config(:api_key, "wrong key", fn ->
           HTTP.request(:get, "zones.json", %{})
         end)
       end)
 
-        assert_receive {:event, [:exkeycdn, :request, :start], %{system_time: _time},
-                        %{method: :get, path: "zones.json"}}
+      assert_receive {:event, [:exkeycdn, :request, :start], %{system_time: _time},
+                      %{method: :get, path: "zones.json"}}
 
-        assert_receive {:event, [:exkeycdn, :request, :stop], %{duration: _time},
-                        %{method: :get, path: "zones.json", http_status: _code}}
+      assert_receive {:event, [:exkeycdn, :request, :stop], %{duration: _time},
+                      %{method: :get, path: "zones.json", http_status: _code}}
     end
   end
 

@@ -1,4 +1,4 @@
-# ExExKeyCDN
+# ExKeyCDN
 
 Elixir client for https://www.ExKeyCDN.com/api
 
@@ -10,7 +10,7 @@ by adding `exExKeyCDN` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:exExKeyCDN, "~> 0.1.0"}
+    {:exKeyCDN, "~> 0.1.0"}
   ]
 end
 ```
@@ -151,6 +151,53 @@ ExKeyCDN.Zone.view 190395
     cacheignorecachecontrol: "enabled",
     cachecookies: "disabled",
     cacherobots: "disabled"
+  },
+  limits: [rate_limit_remaining: "60", rate_limit: "60"]
+]
+```
+
+```elixir
+zone = %ExKeyCDN.Zone{name: "tribal", originurl: "https://blog.tentamen.eu"}
+ExKeyCDN.Zone.add zone
+[
+  zone: %ExKeyCDN.Zone{
+    cachekeyscheme: "disabled",
+    cachebr: "disabled",
+    name: "tribal",
+    type: "push",
+    cachecanonical: "disabled",
+    forcedownload: "disabled",
+    blockbadbots: "disabled",
+    cachehostheader: "disabled",
+    blockreferrer: "disabled",
+    securetokenkey: "",
+    cachemaxexpire: 1440,
+    forcessl: "disabled",
+    sslcert: "shared",
+    originurl: "https://example.com",
+    cachekeycookie: "alphanumeric32charachters",
+    cacheignorequerystring: "enabled",
+    status: "active",
+    expire: "0",
+    cacheignorecachecontrol: "enabled",
+    cors: "disabled",
+    cacheerrorpages: "disabled",
+    cachexpullkey: "ExKeyCDN",
+    cachekeywebp: "disabled",
+    customsslkey: nil,
+    gzip: "disabled",
+    cachestripcookies: "disabled",
+    cachekeydevice: "disabled",
+    dirlistt: "disabled",
+    cachekeyhost: "disabled",
+    id: "190710",
+    securetoken: "disabled",
+    allowemptyreferrer: "enabled",
+    imgproc: "disabled",
+    originshield: "disabled",
+    cacherobots: "disabled",
+    cachecookies: "disabled",
+    customsslcert: nil
   },
   limits: [rate_limit_remaining: "60", rate_limit: "60"]
 ]

@@ -10,5 +10,10 @@ defmodule ExKeyCDN.ZoneBehaviour do
   @doc """
   Returns zone based on zone id
   """
-  @callback view(arg: any) :: term
+  @callback view(integer) :: term
+
+  @doc """
+  Add zone
+  """
+  @callback add(ExKeyCDN.Zone) :: term
 end

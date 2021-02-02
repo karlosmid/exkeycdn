@@ -15,12 +15,12 @@ defmodule ExKeyCDN.Zone do
             allowemptyreferrer: "enabled",
             blockreferrer: "disabled",
             securetoken: "disabled",
-            securetokenkey: "4-5 alphanumeric",
+            securetokenkey: "",
             sslcert: :shared,
             customsslkey: "valid key",
             customsslcert: "valid cert",
             forcessl: "disabled",
-            originurl: "url of max 128 characters",
+            originurl: "https://example.com",
             originshield: "disabled",
             cachemaxexpire: 1440,
             cacheignorecachecontrol: "enabled",
@@ -28,7 +28,7 @@ defmodule ExKeyCDN.Zone do
             cachehostheader: "disabled",
             cachekeyscheme: "disabled",
             cachekeyhost: "disabled",
-            cachekeycookie: "alphanumeric 32 charachters",
+            cachekeycookie: "alphanumeric32charachters",
             cachekeydevice: "disabled",
             cachekeywebp: "disabled",
             cachebr: "disabled",
@@ -43,7 +43,12 @@ defmodule ExKeyCDN.Zone do
   @behaviour ExKeyCDN.ZoneBehaviour
   alias ExKeyCDN.HTTP
 
-  @spec list :: {:error, binary | ExKeyCDN.ErrorResponse.t()} | {list(ExKeyCDN.Zone), map}
+  @spec list ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:zones, list(ExKeyCDN.Zone)}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """
   List Zones
   """
@@ -56,10 +61,16 @@ defmodule ExKeyCDN.Zone do
       [zones: zones, limits: limits]
     else
       {:error, message} -> {:error, message}
-      {false, result} -> result
+      {false, message} -> {:error, message}
     end
   end
 
+  @spec view(integer()) ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:zone, ExKeyCDN.Zone}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """
   View Zone
   """
@@ -67,28 +78,53 @@ defmodule ExKeyCDN.Zone do
   def view(id) do
     with {:ok, result, headers} <- HTTP.request(:get, "zones/#{id}.json"),
          {true, result} <- successfull?(result),
-         zones <- map_to_struct(result["data"]["zone"]),
+         zone <- map_to_struct(result["data"]["zone"]),
          limits <- get_limits(headers) do
-      [zones: zones, limits: limits]
+      [zone: zone, limits: limits]
     else
       {:error, message} -> {:error, message}
       {false, result} -> result
     end
   end
+
+  @spec add(ExKeyCDN.Zone) ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:zone, ExKeyCDN.Zone}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+  @doc """
+  Add Zone
+  """
+  @impl ExKeyCDN.ZoneBehaviour
+  def add(zone) do
+    with {:ok, result, headers} <- HTTP.request(:post, "zones.json", Map.from_struct(zone)),
+         {true, result} <- successfull?(result),
+         zone <- map_to_struct(result["data"]["zone"]),
+         limits <- get_limits(headers) do
+      [zone: zone, limits: limits]
+    else
+      {:error, message} -> {:error, message}
+      {false, message} -> {:error, message}
+    end
+  end
+
   defp successfull?(result) do
     if result["status"] == "success" do
       {true, result}
     else
-      {false, result}
+      {false, result["description"]}
     end
   end
 
   defp map_to_struct(zones) when is_list(zones) do
     Enum.map(zones, fn zone -> map_to_struct(zone) end)
   end
+
   defp map_to_struct(zone), do: struct(ExKeyCDN.Zone, map_to_keywordlist(zone))
 
-  defp map_to_keywordlist(map), do: Enum.map(map, fn {key, value} -> {String.to_atom(key), value} end)
+  defp map_to_keywordlist(map),
+    do: Enum.map(map, fn {key, value} -> {String.to_atom(key), value} end)
 
   defp get_limits(headers) do
     rate_limit = List.keyfind(headers, "X-Rate-Limit-Limit", 0)

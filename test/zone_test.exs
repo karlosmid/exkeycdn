@@ -20,7 +20,7 @@ defmodule ExKeyCDN.ZoneTest do
 
   test "view" do
     expected = [
-      zones: %ExKeyCDN.Zone{},
+      zone: %ExKeyCDN.Zone{},
       limits: [rate_limit_remaining: "60", rate_limit: "60"]
     ]
 
@@ -28,6 +28,20 @@ defmodule ExKeyCDN.ZoneTest do
     |> expect(:view, fn 1 -> expected end)
 
     assert zone().view(1) == expected
+  end
+
+  test "add" do
+    zone = %ExKeyCDN.Zone{name: "third"}
+
+    expected = [
+      zone: zone,
+      limits: [rate_limit_remaining: "60", rate_limit: "60"]
+    ]
+
+    ExKeyCDN.MockZone
+    |> expect(:add, fn _zone -> expected end)
+
+    assert zone().add(zone) == expected
   end
 
   defp zone do

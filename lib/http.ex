@@ -107,26 +107,15 @@ defmodule ExKeyCDN.HTTP do
 
         :erlang.raise(kind, reason, __STACKTRACE__)
     else
-      {:ok, code, headers, body} when code in 200..399 ->
+      {:ok, code, headers, body} when code in 200..400 ->
         duration = System.monotonic_time() - start_time
         emit_stop(duration, method, path, code)
         {:ok, decode_body(body), headers}
 
-      {:ok, 422, _headers, body} ->
-        duration = System.monotonic_time() - start_time
-        emit_stop(duration, method, path, 422)
-
-        {
-          :error,
-          body
-          |> decode_body()
-          |> resolve_error_response()
-        }
-
-      {:ok, code, _headers, _body} when code in 400..504 ->
+      {:ok, code, headers, _body} when code in 401..504 ->
         duration = System.monotonic_time() - start_time
         emit_stop(duration, method, path, code)
-        {:error, code_to_reason(code)}
+        {:error, code_to_reason(code), headers}
 
       {:error, reason} ->
         duration = System.monotonic_time() - start_time
@@ -209,14 +198,6 @@ defmodule ExKeyCDN.HTTP do
 
   for {code, status} <- @statuses do
     def code_to_reason(unquote(code)), do: unquote(status)
-  end
-
-  defp resolve_error_response(%{"api_error_response" => api_error_response}) do
-    Error.new(api_error_response)
-  end
-
-  defp resolve_error_response(%{"unprocessable_entity" => _}) do
-    Error.new(%{message: "Unprocessable Entity"})
   end
 
   defp emit_start(method, path) do

@@ -72,7 +72,7 @@ defmodule ExKeyCDN.Zone do
           ]
           | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """
-  View Zone
+  View
   """
   @impl ExKeyCDN.ZoneBehaviour
   def view(id) do
@@ -94,7 +94,7 @@ defmodule ExKeyCDN.Zone do
           ]
           | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """
-  Add Zone
+  Add
   """
   @impl ExKeyCDN.ZoneBehaviour
   def add(zone) do
@@ -116,7 +116,7 @@ defmodule ExKeyCDN.Zone do
           ]
           | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """
-  Edit Zone
+  Edit
   """
   @impl ExKeyCDN.ZoneBehaviour
   def edit(id, params) do
@@ -134,18 +134,33 @@ defmodule ExKeyCDN.Zone do
   @spec delete(integer()) ::
           [
             {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-            {:zone, []}
+            {:zone, :deleted}
           ]
           | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """
-  Delete Zone
+  Delete
   """
   @impl ExKeyCDN.ZoneBehaviour
   def delete(id) do
     with {:ok, result, headers} <- HTTP.request(:delete, "zones/#{id}.json"),
          {true, _result} <- successfull?(result),
          limits <- get_limits(headers) do
-      [zone: [], limits: limits]
+      [zone: :deleted, limits: limits]
+    else
+      {:error, message} -> {:error, message}
+      {false, message} -> {:error, message}
+    end
+  end
+
+  @doc """
+  Purge Cache
+  """
+  @impl ExKeyCDN.ZoneBehaviour
+  def purge_cache(id) do
+    with {:ok, result, headers} <- HTTP.request(:get, "zones/purge/#{id}.json"),
+         {true, _result} <- successfull?(result),
+         limits <- get_limits(headers) do
+      [zone: :cache_purged, limits: limits]
     else
       {:error, message} -> {:error, message}
       {false, message} -> {:error, message}

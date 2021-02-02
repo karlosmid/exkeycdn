@@ -61,7 +61,7 @@ defmodule ExKeyCDN.ZoneTest do
 
   test "delete" do
     expected = [
-      zone: [],
+      zone: :deleted,
       limits: [rate_limit_remaining: "60", rate_limit: "60"]
     ]
 
@@ -69,6 +69,18 @@ defmodule ExKeyCDN.ZoneTest do
     |> expect(:delete, fn 1 -> expected end)
 
     assert zone().delete(1) == expected
+  end
+
+  test "purge cache" do
+    expected = [
+      zone: :cache_purged,
+      limits: [rate_limit_remaining: "60", rate_limit: "60"]
+    ]
+
+    ExKeyCDN.MockZone
+    |> expect(:purge_cache, fn 1 -> expected end)
+
+    assert zone().purge_cache(1) == expected
   end
 
   defp zone do

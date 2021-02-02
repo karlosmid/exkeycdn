@@ -8,4 +8,5 @@ use Mix.Config
 # General application configuration
 config :exkeycdn,
   api_key: {:system, "api_key"},
-  url: "https://api.keycdn.com"
+  url: "https://api.keycdn.com",
+  http_options: [recv_timeout: 60_000]

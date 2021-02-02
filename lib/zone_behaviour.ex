@@ -13,7 +13,7 @@ defmodule ExKeyCDN.ZoneBehaviour do
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 
   @doc """
-  Returns zone based on zone id
+  Returns zone based on id
   """
   @callback view(integer) ::
               [
@@ -23,7 +23,7 @@ defmodule ExKeyCDN.ZoneBehaviour do
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 
   @doc """
-  Add zone
+  Add
   """
   @callback add(ExKeyCDN.Zone.t()) ::
               [
@@ -33,7 +33,7 @@ defmodule ExKeyCDN.ZoneBehaviour do
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 
   @doc """
-  Edit zone
+  Edit
   """
   @callback edit(integer, map) ::
               [
@@ -43,12 +43,22 @@ defmodule ExKeyCDN.ZoneBehaviour do
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 
   @doc """
-  Delete zone
+  Delete
   """
   @callback delete(integer()) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:zone, []}
+                {:zone, :deleted}
+              ]
+              | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+
+  @doc """
+  Purge Cache
+  """
+  @callback purge_cache(integer()) ::
+              [
+                {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+                {:zone, :cache_purged}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 end

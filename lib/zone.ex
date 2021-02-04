@@ -38,10 +38,11 @@ defmodule ExKeyCDN.Zone do
             cachecanonical: "disabled",
             cacherobots: "disabled",
             cacheerrorpages: "disabled",
-            dirlistt: "disabled"
+            dirlist: "disabled"
 
   @behaviour ExKeyCDN.ZoneBehaviour
-  alias ExKeyCDN.HTTP
+  @path "zones"
+  alias ExKeyCDN.{HTTP, Util}
 
   @spec list ::
           [
@@ -54,10 +55,10 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def list do
-    with {:ok, result, headers} <- HTTP.request(:get, "zones.json"),
-         {true, result} <- successfull?(result),
-         zones <- map_to_struct(result["data"]["zones"]),
-         limits <- get_limits(headers) do
+    with {:ok, result, headers} <- HTTP.request(:get, "#{@path}.json"),
+         {true, result} <- Util.successfull?(result),
+         zones <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, @path),
+         limits <- Util.get_limits(headers) do
       [zones: zones, limits: limits]
     else
       {:error, message} -> {:error, message}
@@ -76,10 +77,10 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def view(id) do
-    with {:ok, result, headers} <- HTTP.request(:get, "zones/#{id}.json"),
-         {true, result} <- successfull?(result),
-         zone <- map_to_struct(result["data"]["zone"]),
-         limits <- get_limits(headers) do
+    with {:ok, result, headers} <- HTTP.request(:get, "#{@path}/#{id}.json"),
+         {true, result} <- Util.successfull?(result),
+         zone <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, String.slice(@path, 0..-2)),
+         limits <- Util.get_limits(headers) do
       [zone: zone, limits: limits]
     else
       {:error, message} -> {:error, message}
@@ -98,10 +99,10 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def add(zone) do
-    with {:ok, result, headers} <- HTTP.request(:post, "zones.json", Map.from_struct(zone)),
-         {true, result} <- successfull?(result),
-         zone <- map_to_struct(result["data"]["zone"]),
-         limits <- get_limits(headers) do
+    with {:ok, result, headers} <- HTTP.request(:post, "#{@path}.json", Map.from_struct(zone)),
+         {true, result} <- Util.successfull?(result),
+         zone <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, String.slice(@path, 0..-2)),
+         limits <- Util.get_limits(headers) do
       [zone: zone, limits: limits]
     else
       {:error, message} -> {:error, message}
@@ -120,10 +121,10 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def edit(id, params) do
-    with {:ok, result, headers} <- HTTP.request(:put, "zones/#{id}.json", params),
-         {true, result} <- successfull?(result),
-         zone <- map_to_struct(result["data"]["zone"]),
-         limits <- get_limits(headers) do
+    with {:ok, result, headers} <- HTTP.request(:put, "#{@path}/#{id}.json", params),
+         {true, result} <- Util.successfull?(result),
+         zone <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, String.slice(@path, 0..-2)),
+         limits <- Util.get_limits(headers) do
       [zone: zone, limits: limits]
     else
       {:error, message} -> {:error, message}
@@ -142,9 +143,9 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def delete(id) do
-    with {:ok, result, headers} <- HTTP.request(:delete, "zones/#{id}.json"),
-         {true, _result} <- successfull?(result),
-         limits <- get_limits(headers) do
+    with {:ok, result, headers} <- HTTP.request(:delete, "#{@path}/#{id}.json"),
+         {true, _result} <- Util.successfull?(result),
+         limits <- Util.get_limits(headers) do
       [zone: :deleted, limits: limits]
     else
       {:error, message} -> {:error, message}
@@ -163,9 +164,9 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def purge_cache(id) do
-    with {:ok, result, headers} <- HTTP.request(:get, "zones/purge/#{id}.json"),
-         {true, _result} <- successfull?(result),
-         limits <- get_limits(headers) do
+    with {:ok, result, headers} <- HTTP.request(:get, "#{@path}/purge/#{id}.json"),
+         {true, _result} <- Util.successfull?(result),
+         limits <- Util.get_limits(headers) do
       [zone: :cache_purged, limits: limits]
     else
       {:error, message} -> {:error, message}
@@ -184,40 +185,14 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def purge_url(id, urls) do
-    with {:ok, result, headers} <- HTTP.request(:delete, "zones/purge/#{id}.json", %{urls: urls}),
-         {true, _result} <- successfull?(result),
-         limits <- get_limits(headers) do
+    with {:ok, result, headers} <-
+           HTTP.request(:delete, "#{@path}/purge/#{id}.json", %{urls: urls}),
+         {true, _result} <- Util.successfull?(result),
+         limits <- Util.get_limits(headers) do
       [zone: :url_purged, limits: limits]
     else
       {:error, message} -> {:error, message}
       {false, message} -> {:error, message}
     end
-  end
-
-  defp successfull?(result) do
-    if result["status"] == "success" do
-      {true, result}
-    else
-      {false, result["description"]}
-    end
-  end
-
-  defp map_to_struct(zones) when is_list(zones) do
-    Enum.map(zones, fn zone -> map_to_struct(zone) end)
-  end
-
-  defp map_to_struct(zone), do: struct(ExKeyCDN.Zone, map_to_keywordlist(zone))
-
-  defp map_to_keywordlist(map),
-    do: Enum.map(map, fn {key, value} -> {String.to_atom(key), value} end)
-
-  defp get_limits(headers) do
-    rate_limit = List.keyfind(headers, "X-Rate-Limit-Limit", 0)
-    rate_limit = if rate_limit, do: elem(rate_limit, 1)
-    rate_limit_remaining = List.keyfind(headers, "X-Rate-Limit-Remaining", 0)
-    rate_limit_remaining = if rate_limit_remaining, do: elem(rate_limit_remaining, 1)
-
-    Keyword.put([], :rate_limit, rate_limit)
-    |> Keyword.put(:rate_limit_remaining, rate_limit_remaining)
   end
 end

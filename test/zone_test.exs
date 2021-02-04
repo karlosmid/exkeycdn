@@ -96,6 +96,6 @@ defmodule ExKeyCDN.ZoneTest do
   end
 
   defp zone do
-    Application.get_env(:ExKeyCDN, :zone)
+    Application.get_env(:exkeycdn, :zone)
   end
 end

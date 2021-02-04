@@ -55,4 +55,53 @@ defmodule ExKeyCDN.Util do
       {key, val} -> {String.to_atom(key), val}
     end)
   end
+
+  @spec successfull?(map) ::
+          {false, binary()} | {true, map}
+  def successfull?(%{"status" => status, "description" => description} = result) do
+    if status == "success" do
+      {true, result}
+    else
+      {false, description}
+    end
+  end
+
+  def successfull?(_result),
+    do: {false, "API changed, :ok resopnse body does not contain status and description keys."}
+
+  @spec map_to_struct(list, ExKeyCDN.Zone | ExKeyCDN.ZoneAlias, binary) :: list | map
+  def map_to_struct([], _type, _key), do: []
+
+  def map_to_struct(items, type, key) do
+    values = data(items, key)
+
+    cond do
+      is_nil(values) -> {:error, "API changed or data key value did not sent."}
+      is_map(values) -> struct(type, map_to_keywordlist(values))
+      true -> Enum.map(values, fn item -> struct(type, map_to_keywordlist(item)) end)
+    end
+  end
+
+  defp data(items, key), do: items[key]
+
+  @spec map_to_keywordlist(map) :: list(keyword)
+  def map_to_keywordlist(map) when is_map(map),
+    do: Enum.map(map, fn {key, value} -> {String.to_atom(key), value} end)
+
+  def map_to_keywordlist(_map) do
+    raise ArgumentError, message: "not a map in response list"
+  end
+
+  @spec get_limits(list(keyword)) :: [{:rate_limit, binary}, {:rate_limit_remaining, binary}]
+  def get_limits(headers) do
+    rate_limit = List.keyfind(headers, "X-Rate-Limit-Limit", 0)
+    rate_limit = if rate_limit, do: elem(rate_limit, 1), else: :not_sent
+    rate_limit_remaining = List.keyfind(headers, "X-Rate-Limit-Remaining", 0)
+
+    rate_limit_remaining =
+      if rate_limit_remaining, do: elem(rate_limit_remaining, 1), else: :not_sent
+
+    Keyword.put([], :rate_limit, rate_limit)
+    |> Keyword.put(:rate_limit_remaining, rate_limit_remaining)
+  end
 end

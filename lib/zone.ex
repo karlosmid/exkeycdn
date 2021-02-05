@@ -42,7 +42,7 @@ defmodule ExKeyCDN.Zone do
 
   @behaviour ExKeyCDN.ZoneBehaviour
   @path "zones"
-  alias ExKeyCDN.{HTTP, Util}
+  alias ExKeyCDN.Util
 
   @spec list ::
           [
@@ -55,7 +55,7 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def list do
-    with {:ok, result, headers} <- HTTP.request(:get, "#{@path}.json"),
+    with {:ok, result, headers} <- http().request(:get, "#{@path}.json", %{}),
          {true, result} <- Util.successfull?(result),
          zones <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, @path),
          limits <- Util.get_limits(headers) do
@@ -77,14 +77,14 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def view(id) do
-    with {:ok, result, headers} <- HTTP.request(:get, "#{@path}/#{id}.json"),
+    with {:ok, result, headers} <- http().request(:get, "#{@path}/#{id}.json", %{}),
          {true, result} <- Util.successfull?(result),
          zone <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, String.slice(@path, 0..-2)),
          limits <- Util.get_limits(headers) do
       [zone: zone, limits: limits]
     else
       {:error, message} -> {:error, message}
-      {false, result} -> result
+      {false, message} -> {:error, message}
     end
   end
 
@@ -99,7 +99,7 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def add(zone) do
-    with {:ok, result, headers} <- HTTP.request(:post, "#{@path}.json", Map.from_struct(zone)),
+    with {:ok, result, headers} <- http().request(:post, "#{@path}.json", Map.from_struct(zone)),
          {true, result} <- Util.successfull?(result),
          zone <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, String.slice(@path, 0..-2)),
          limits <- Util.get_limits(headers) do
@@ -121,7 +121,7 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def edit(id, params) do
-    with {:ok, result, headers} <- HTTP.request(:put, "#{@path}/#{id}.json", params),
+    with {:ok, result, headers} <- http().request(:put, "#{@path}/#{id}.json", params),
          {true, result} <- Util.successfull?(result),
          zone <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, String.slice(@path, 0..-2)),
          limits <- Util.get_limits(headers) do
@@ -143,7 +143,7 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def delete(id) do
-    with {:ok, result, headers} <- HTTP.request(:delete, "#{@path}/#{id}.json"),
+    with {:ok, result, headers} <- http().request(:delete, "#{@path}/#{id}.json", %{}),
          {true, _result} <- Util.successfull?(result),
          limits <- Util.get_limits(headers) do
       [zone: :deleted, limits: limits]
@@ -164,7 +164,7 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def purge_cache(id) do
-    with {:ok, result, headers} <- HTTP.request(:get, "#{@path}/purge/#{id}.json"),
+    with {:ok, result, headers} <- http().request(:get, "#{@path}/purge/#{id}.json", %{}),
          {true, _result} <- Util.successfull?(result),
          limits <- Util.get_limits(headers) do
       [zone: :cache_purged, limits: limits]
@@ -186,7 +186,7 @@ defmodule ExKeyCDN.Zone do
   @impl ExKeyCDN.ZoneBehaviour
   def purge_url(id, urls) do
     with {:ok, result, headers} <-
-           HTTP.request(:delete, "#{@path}/purge/#{id}.json", %{urls: urls}),
+           http().request(:delete, "#{@path}/purgeurl/#{id}.json", %{urls: urls}),
          {true, _result} <- Util.successfull?(result),
          limits <- Util.get_limits(headers) do
       [zone: :url_purged, limits: limits]
@@ -194,5 +194,9 @@ defmodule ExKeyCDN.Zone do
       {:error, message} -> {:error, message}
       {false, message} -> {:error, message}
     end
+  end
+
+  defp http do
+    Application.get_env(:exkeycdn, :http)
   end
 end

@@ -20,6 +20,7 @@ defmodule ExKeyCDN.HTTP do
 
   alias ExKeyCDN.ErrorResponse, as: Error
   alias ExKeyCDN.{Decoder, FormEncoder, JsonEncoder}
+  @behaviour ExKeyCDN.HTTPBehaviour
 
   @type response ::
           {:ok, map, list | {:error, atom}}
@@ -63,6 +64,7 @@ defmodule ExKeyCDN.HTTP do
         end
       end
   """
+  @impl ExKeyCDN.HTTPBehaviour
   @spec request(atom, binary, binary | map) :: response
   def request(method, path, body \\ %{}) do
     emit_start(method, path)

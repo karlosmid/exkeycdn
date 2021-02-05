@@ -214,7 +214,7 @@ ExKeyCDN.Zone.view 190395
 
 ```elixir
 ExKeyCDN.Zone.delete(190710)
-[zone: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
+[zone: :deleted, limits: [rate_limit_remaining: "60", rate_limit: "60"]]
 ```
 
 ```elixir

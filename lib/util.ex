@@ -104,4 +104,8 @@ defmodule ExKeyCDN.Util do
     Keyword.put([], :rate_limit, rate_limit)
     |> Keyword.put(:rate_limit_remaining, rate_limit_remaining)
   end
+  @spec http() :: ExKeyCDN.HTTP
+  def http() do
+    Application.get_env(:exkeycdn, :http)
+  end
 end

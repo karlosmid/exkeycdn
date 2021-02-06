@@ -1,75 +1,61 @@
-defmodule ExKeyCDN.ZoneBehaviour do
+defmodule ExKeyCDN.ReportBehaviour do
   @moduledoc """
-  Zone Behaviour
+  Report Behaviour
   """
 
   @doc """
-  List
+  Traffic Stats
   """
-  @callback list() ::
+  @callback traffic(ExKeyCDN.Report) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:zones, list(ExKeyCDN.Zone)}
+                {:stats, list(ExKeyCDN.Statistic)}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 
   @doc """
-  Returns zone based on id
+  Storage Stats
   """
-  @callback view(integer) ::
+  @callback storage(ExKeyCDN.Report) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:zone, ExKeyCDN.Zone}
+                {:stats, list(ExKeyCDN.Statistic)}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
-
   @doc """
-  Add
+  Image Processing Stats
   """
-  @callback add(ExKeyCDN.Zone.t()) ::
+  @callback image_processing(ExKeyCDN.Report) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:zone, ExKeyCDN.Zone}
+                {:stats, list(ExKeyCDN.Statstic)}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
-
   @doc """
-  Edit
+  Status Stats
   """
-  @callback edit(integer, map) ::
+  @callback status(ExKeyCDN.Report) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:zone, ExKeyCDN.Zone}
+                {:stats, list(ExKeyCDN.StatusStatistic)}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
-
   @doc """
-  Delete
+  Credit Stats
   """
-  @callback delete(integer()) ::
+  @callback credit(ExKeyCDN.Report) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:zone, :deleted}
+                {:stats, list(ExKeyCDN.CreditStatstic)}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
-
   @doc """
-  Purge Cache
+  Balance Stats
   """
-  @callback purge_cache(integer()) ::
+  @callback balance(ExKeyCDN.Report) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:zone, :cache_purged}
-              ]
-              | {:error, binary | ExKeyCDN.ErrorResponse.t()}
-
-  @doc """
-  Purge URL
-  """
-  @callback purge_url(integer(), list) ::
-              [
-                {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:zone, :url_purged}
+                {:amount, integer()}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 end

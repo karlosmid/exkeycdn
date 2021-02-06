@@ -320,6 +320,19 @@ iex(10)> ExKeyCDN.ZoneReferrer.edit(119523, %{zone_id: 190984, name: "google.hr"
 iex(10)> ExKeyCDN.ZoneReferrer.delete(119523)
 [zone_referrer: :deleted, limits: [rate_limit_remaining: "59", rate_limit: "60"]]
 ```
+## Reports
+
+### Traffic
+
+```elixir
+iex(8)> now = System.os_time(:second)
+1612637843
+iex(9)> start = now - 24 * 3600
+1612551443
+iex(10)> ExKeyCDN.Report.traffic(%ExKeyCDN.Report{zone_id: 191162, start: start, end: now})        
+[stats: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
+iex(11)>
+```
 
 ## Integration Testing
 

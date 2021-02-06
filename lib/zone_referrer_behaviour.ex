@@ -2,6 +2,10 @@ defmodule ExKeyCDN.ZoneReferrerBehaviour do
   @moduledoc """
   Zone Referrers Behaviour
   """
+
+  @doc """
+  List
+  """
   @callback list() ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},

@@ -2,6 +2,10 @@ defmodule ExKeyCDN.ZoneAliasBehaviour do
   @moduledoc """
   Zone Aliases Behaviour
   """
+
+  @doc """
+  List
+  """
   @callback list() ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},

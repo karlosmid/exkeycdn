@@ -7,7 +7,7 @@ defmodule ExKeyCDN.ZoneTest do
   setup :verify_on_exit!
 
   describe "list/0" do
-    test "mock list" do
+    test "mock" do
       expected = [
         zones: [%ExKeyCDN.Zone{}, %ExKeyCDN.Zone{}],
         limits: [rate_limit_remaining: "60", rate_limit: "60"]
@@ -56,7 +56,7 @@ defmodule ExKeyCDN.ZoneTest do
   end
 
   describe "view/1" do
-    test "mock view" do
+    test "mock" do
       expected = [
         zone: %ExKeyCDN.Zone{},
         limits: [rate_limit_remaining: "60", rate_limit: "60"]
@@ -109,7 +109,7 @@ defmodule ExKeyCDN.ZoneTest do
   end
 
   describe "add/1" do
-    test "mock add" do
+    test "mock" do
       zone = %ExKeyCDN.Zone{name: "third"}
 
       expected = [
@@ -166,7 +166,7 @@ defmodule ExKeyCDN.ZoneTest do
   end
 
   describe "edit/2" do
-    test "mock edit" do
+    test "mock" do
       zone = %ExKeyCDN.Zone{name: "third_update"}
       param = %{name: "third_update"}
 
@@ -222,7 +222,7 @@ defmodule ExKeyCDN.ZoneTest do
   end
 
   describe "delete/1" do
-    test "mock delete" do
+    test "mock" do
       expected = [
         zone: :deleted,
         limits: [rate_limit_remaining: "60", rate_limit: "60"]
@@ -271,7 +271,7 @@ defmodule ExKeyCDN.ZoneTest do
   end
 
   describe "purge_cache/1" do
-    test "mock purge cache" do
+    test "mock" do
       expected = [
         zone: :cache_purged,
         limits: [rate_limit_remaining: "60", rate_limit: "60"]
@@ -320,7 +320,7 @@ defmodule ExKeyCDN.ZoneTest do
   end
 
   describe "purge_url/2" do
-    test "mock purge url" do
+    test "mock" do
       expected = [
         zone: :url_purged,
         limits: [rate_limit_remaining: "60", rate_limit: "60"]

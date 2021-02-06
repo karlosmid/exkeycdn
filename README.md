@@ -22,13 +22,13 @@ end
 ## ExKeyCDN.zone
 
 ```elixir
-ExKeyCDN.Zone.list
+iex(11)> ExKeyCDN.Zone.list
 [zones: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
 ```
 
 ```elixir
-zone = %ExKeyCDN.Zone{name: "tribal", originurl: "https://blog.tentamen.eu"}
-ExKeyCDN.Zone.add zone
+iex(11)> zone = %ExKeyCDN.Zone{name: "tribal", originurl: "https://blog.tentamen.eu"}
+iex(11)> ExKeyCDN.Zone.add zone
 [
   zone: %ExKeyCDN.Zone{
     cachekeyscheme: "disabled",
@@ -72,8 +72,9 @@ ExKeyCDN.Zone.add zone
   limits: [rate_limit_remaining: "60", rate_limit: "60"]
 ]
 ```
+
 ```elixir
-ExKeyCDN.Zone.list
+iex(11)> ExKeyCDN.Zone.list
 [
   zones: [
     %ExKeyCDN.Zone{
@@ -120,10 +121,8 @@ ExKeyCDN.Zone.list
 ]
 ```
 
-
-
 ```elixir
-ExKeyCDN.Zone.edit(190710, %{expire: 1440})           
+iex(11)> ExKeyCDN.Zone.edit(190710, %{expire: 1440})
 [
   zone: %ExKeyCDN.Zone{
     cachekeyscheme: "disabled",
@@ -213,23 +212,23 @@ ExKeyCDN.Zone.view 190395
 ```
 
 ```elixir
-ExKeyCDN.Zone.delete(190710)
+iex(11)> ExKeyCDN.Zone.delete(190710)
 [zone: :deleted, limits: [rate_limit_remaining: "60", rate_limit: "60"]]
 ```
 
 ```elixir
-ExKeyCDN.Zone.delete 190710
+iex(11)> ExKeyCDN.Zone.delete 190710
 {:error, :forbidden}
 ```
 
 ```elixir
-ExKeyCDN.Zone.purge_cache(190395)
+iex(11)> ExKeyCDN.Zone.purge_cache(190395)
 #note, this action lasts > 5 sec.
 [zone: :cache_purged, limits: [rate_limit_remaining: "60", rate_limit: "60"]]
 ```
 
 ```elixir
-ExKeyCDN.Zone.purge_url(190395, ["a.css", "b.html"])
+iex(11)> ExKeyCDN.Zone.purge_url(190395, ["a.css", "b.html"])
 #note, this action lasts > 5 sec.
 [zone: :url_purged, limits: [rate_limit_remaining: "59", rate_limit: "60"]]
 ```
@@ -237,22 +236,22 @@ ExKeyCDN.Zone.purge_url(190395, ["a.css", "b.html"])
 ## ExKeyCDN.ZoneAlias
 
 ```elixir
-ExKeyCDN.ZoneAlias.list
+iex(10)> ExKeyCDN.ZoneAlias.list
 [zone_aliases: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
 ```
 
 ```elixir
-zone_alias = %ExKeyCDN.ZoneAlias{zone_id: 190976, name: "google.hr"}
+iex(10)> zone_alias = %ExKeyCDN.ZoneAlias{zone_id: 190976, name: "google.hr"}
 %ExKeyCDN.ZoneAlias{id: nil, name: "google.hr", zone_id: 190976}
 iex(10)> ExKeyCDN.ZoneAlias.add zone_alias
 [
-  zone: %ExKeyCDN.ZoneAlias{id: "119523", name: "google.hr", zone_id: "190976"},
+  zone_alias: %ExKeyCDN.ZoneAlias{id: "119523", name: "google.hr", zone_id: "190976"},
   limits: [rate_limit_remaining: "60", rate_limit: "60"]
 ]
 ```
 
 ```elixir
-ExKeyCDN.ZoneAlias.list
+iex(10)> ExKeyCDN.ZoneAlias.list
 [
   zone_aliases: [
     %ExKeyCDN.ZoneAlias{id: "119523", name: "google.hr", zone_id: "190976"}
@@ -262,7 +261,7 @@ ExKeyCDN.ZoneAlias.list
 ```
 
 ```elixir
-ExKeyCDN.ZoneAlias.edit(119523, %{zone_id: 190984, name: "google.hr"}) 
+iex(10)> ExKeyCDN.ZoneAlias.edit(119523, %{zone_id: 190984, name: "google.hr"}) 
 [
   zone_alias: %ExKeyCDN.ZoneAlias{
     id: "119523",
@@ -274,7 +273,7 @@ ExKeyCDN.ZoneAlias.edit(119523, %{zone_id: 190984, name: "google.hr"})
 ```
 
 ```elixir
-ExKeyCDN.ZoneAlias.delete(119523)                                     
+iex(10)> ExKeyCDN.ZoneAlias.delete(119523)                                     
 [zone_alias: :deleted, limits: [rate_limit_remaining: "59", rate_limit: "60"]]
 ```
 

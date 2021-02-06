@@ -8,7 +8,7 @@ defmodule ExKeyCDN.ZoneAlias do
 
   @behaviour ExKeyCDN.ZoneAliasBehaviour
   @path "zonealiases"
-  alias ExKeyCDN.{HTTP, Util}
+  alias ExKeyCDN.Util
 
   @spec list ::
           [
@@ -21,7 +21,7 @@ defmodule ExKeyCDN.ZoneAlias do
   """
   @impl ExKeyCDN.ZoneAliasBehaviour
   def list do
-    with {:ok, result, headers} <- HTTP.request(:get, "#{@path}.json"),
+    with {:ok, result, headers} <- Util.http().request(:get, "#{@path}.json", %{}),
          {true, result} <- Util.successfull?(result),
          zone_aliases <- Util.map_to_struct(result["data"], ExKeyCDN.ZoneAlias, @path),
          limits <- Util.get_limits(headers) do
@@ -45,12 +45,12 @@ defmodule ExKeyCDN.ZoneAlias do
   @impl ExKeyCDN.ZoneAliasBehaviour
   def add(zone_alias) do
     with {:ok, result, headers} <-
-           HTTP.request(:post, "#{@path}.json", Map.from_struct(zone_alias)),
+           Util.http().request(:post, "#{@path}.json", Map.from_struct(zone_alias)),
          {true, result} <- Util.successfull?(result),
          zone_alias <-
            Util.map_to_struct(result["data"], ExKeyCDN.ZoneAlias, String.slice(@path, 0..-3)),
          limits <- Util.get_limits(headers) do
-      [zone: zone_alias, limits: limits]
+      [zone_alias: zone_alias, limits: limits]
     else
       {:error, message} -> {:error, message}
       {false, message} -> {:error, message}
@@ -68,7 +68,7 @@ defmodule ExKeyCDN.ZoneAlias do
   """
   @impl ExKeyCDN.ZoneAliasBehaviour
   def edit(id, params) do
-    with {:ok, result, headers} <- HTTP.request(:put, "#{@path}/#{id}.json", params),
+    with {:ok, result, headers} <- Util.http().request(:put, "#{@path}/#{id}.json", params),
          {true, result} <- Util.successfull?(result),
          zone_alias <-
            Util.map_to_struct(result["data"], ExKeyCDN.ZoneAlias, String.slice(@path, 0..-3)),
@@ -91,7 +91,7 @@ defmodule ExKeyCDN.ZoneAlias do
   """
   @impl ExKeyCDN.ZoneAliasBehaviour
   def delete(id) do
-    with {:ok, result, headers} <- HTTP.request(:delete, "#{@path}/#{id}.json"),
+    with {:ok, result, headers} <- Util.http().request(:delete, "#{@path}/#{id}.json", %{}),
          {true, _result} <- Util.successfull?(result),
          limits <- Util.get_limits(headers) do
       [zone_alias: :deleted, limits: limits]

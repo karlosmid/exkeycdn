@@ -69,7 +69,8 @@ defmodule ExKeyCDN.Util do
   def successfull?(_result),
     do: {false, "API changed, :ok resopnse body does not contain status and description keys."}
 
-  @spec map_to_struct(list, ExKeyCDN.Zone | ExKeyCDN.ZoneAlias, binary) :: list | map
+  @spec map_to_struct(list, ExKeyCDN.Zone | ExKeyCDN.ZoneAlias | ExKeyCDN.ZoneReferrer, binary) ::
+          list | map
   def map_to_struct([], _type, _key), do: []
 
   def map_to_struct(items, type, key) do

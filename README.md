@@ -273,8 +273,52 @@ iex(10)> ExKeyCDN.ZoneAlias.edit(119523, %{zone_id: 190984, name: "google.hr"})
 ```
 
 ```elixir
-iex(10)> ExKeyCDN.ZoneAlias.delete(119523)                                     
+iex(10)> ExKeyCDN.ZoneAlias.delete(119523)
 [zone_alias: :deleted, limits: [rate_limit_remaining: "59", rate_limit: "60"]]
+```
+
+## ExKeyCDN.ZoneReferrer
+
+```elixir
+iex(10)> ExKeyCDN.ZoneReferrer.list
+[zone_referrers: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
+```
+
+```elixir
+iex(10)> zone_referrer = %ExKeyCDN.ZoneReferrer{zone_id: 190976, name: "google.hr"}
+%ExKeyCDN.ZoneReferrer{id: nil, name: "google.hr", zone_id: 190976}
+iex(10)> ExKeyCDN.ZoneReferrer.add zone_referrer
+[
+  zone_referrer: %ExKeyCDN.ZoneReferrer{id: "119523", name: "google.hr", zone_id: "190976"},
+  limits: [rate_limit_remaining: "60", rate_limit: "60"]
+]
+```
+
+```elixir
+iex(10)> ExKeyCDN.ZoneReferrer.list
+[
+  zone_referrers: [
+    %ExKeyCDN.ZoneReferrer{id: "119523", name: "google.hr", zone_id: "190976"}
+  ],
+  limits: [rate_limit_remaining: "60", rate_limit: "60"]
+]
+```
+
+```elixir
+iex(10)> ExKeyCDN.ZoneReferrer.edit(119523, %{zone_id: 190984, name: "google.hr"}) 
+[
+  zone_referrer: %ExKeyCDN.ZoneReferrer{
+    id: "119523",
+    name: "google.hr",
+    zone_id: "190984"
+  },
+  limits: [rate_limit_remaining: "59", rate_limit: "60"]
+]
+```
+
+```elixir
+iex(10)> ExKeyCDN.ZoneReferrer.delete(119523)
+[zone_referrer: :deleted, limits: [rate_limit_remaining: "59", rate_limit: "60"]]
 ```
 
 ## Integration Testing

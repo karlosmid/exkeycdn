@@ -75,7 +75,8 @@ defmodule ExKeyCDN.Util do
           | ExKeyCDN.ZoneAlias
           | ExKeyCDN.ZoneReferrer
           | ExKeyCDN.Statistic
-          | ExKeyCDN.StatusStatistic,
+          | ExKeyCDN.StatusStatistic
+          | ExKeyCDN.CreditStatistic,
           binary
         ) ::
           list | map

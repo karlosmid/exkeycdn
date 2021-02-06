@@ -46,7 +46,7 @@ defmodule ExKeyCDN.ReportBehaviour do
   @callback credit(ExKeyCDN.Report) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:stats, list(ExKeyCDN.CreditStatstic)}
+                {:stats, list(ExKeyCDN.CreditStatistic)}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """

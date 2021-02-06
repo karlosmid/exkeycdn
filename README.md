@@ -358,6 +358,27 @@ iex(3)> ExKeyCDN.Report.status(%ExKeyCDN.Report{zone_id: 191162, start: start, e
 [stats: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
 ```
 
+### Credit
+
+```elixir
+iex(3)> ExKeyCDN.Report.credit(%ExKeyCDN.Report{start: start, end: now})
+[
+  stats: [
+    %ExKeyCDN.CreditStatistic{
+      amount: "-0.01",
+      timestamp: "1612483200",
+      type: "storage"
+    },
+    %ExKeyCDN.CreditStatistic{
+      amount: "-0.01",
+      timestamp: "1612569600",
+      type: "storage"
+    }
+  ],
+  limits: [rate_limit_remaining: "60", rate_limit: "60"]
+]
+```
+
 ## Integration Testing
 
 Library is using behaviour which is a precondition for using Mox library. Here is example how to mock Zone list feature:

@@ -71,7 +71,11 @@ defmodule ExKeyCDN.Util do
 
   @spec map_to_struct(
           list,
-          ExKeyCDN.Zone | ExKeyCDN.ZoneAlias | ExKeyCDN.ZoneReferrer | ExKeyCDN.Statistic,
+          ExKeyCDN.Zone
+          | ExKeyCDN.ZoneAlias
+          | ExKeyCDN.ZoneReferrer
+          | ExKeyCDN.Statistic
+          | ExKeyCDN.StatusStatistic,
           binary
         ) ::
           list | map

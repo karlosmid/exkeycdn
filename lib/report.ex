@@ -8,7 +8,7 @@ defmodule ExKeyCDN.Report do
 
   @behaviour ExKeyCDN.ReportBehaviour
   @path "reports"
-  alias ExKeyCDN.{Statistic, Util}
+  alias ExKeyCDN.{Statistic, StatusStatistic, Util}
 
   @spec traffic(ExKeyCDN.Report) ::
           [
@@ -71,6 +71,29 @@ defmodule ExKeyCDN.Report do
            Util.http().request(:get, "#{@path}/ip.json", Map.from_struct(params)),
          {true, result} <- Util.successfull?(result),
          stats <- Util.map_to_struct(result["data"], Statistic, "stats"),
+         limits <- Util.get_limits(headers) do
+      [stats: stats, limits: limits]
+    else
+      {:error, message} -> {:error, message}
+      {false, message} -> {:error, message}
+    end
+  end
+
+  @spec status(ExKeyCDN.Report) ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:stats, list(ExKeyCDN.StatusStatistic)}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+  @doc """
+  Status Stats
+  """
+  @impl ExKeyCDN.ReportBehaviour
+  def status(params) do
+    with {:ok, result, headers} <-
+           Util.http().request(:get, "#{@path}/statestats.json", Map.from_struct(params)),
+         {true, result} <- Util.successfull?(result),
+         stats <- Util.map_to_struct(result["data"], StatusStatistic, "stats"),
          limits <- Util.get_limits(headers) do
       [stats: stats, limits: limits]
     else

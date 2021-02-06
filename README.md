@@ -351,6 +351,12 @@ iex(4)>
 iex(4)> ExKeyCDN.Report.image_processing(%ExKeyCDN.Report{zone_id: 191162, start: start, end: now})
 [stats: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
 ```
+### Status
+
+```elixir
+iex(3)> ExKeyCDN.Report.status(%ExKeyCDN.Report{zone_id: 191162, start: start, end: now})        
+[stats: [], limits: [rate_limit_remaining: "60", rate_limit: "60"]]
+```
 
 ## Integration Testing
 

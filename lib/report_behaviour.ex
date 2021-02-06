@@ -28,7 +28,7 @@ defmodule ExKeyCDN.ReportBehaviour do
   @callback image_processing(ExKeyCDN.Report) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:stats, list(ExKeyCDN.Statstic)}
+                {:stats, list(ExKeyCDN.Statistic)}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
   @doc """

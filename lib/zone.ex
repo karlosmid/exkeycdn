@@ -99,7 +99,8 @@ defmodule ExKeyCDN.Zone do
   """
   @impl ExKeyCDN.ZoneBehaviour
   def add(zone) do
-    with {:ok, result, headers} <- Util.http().request(:post, "#{@path}.json", Map.from_struct(zone)),
+    with {:ok, result, headers} <-
+           Util.http().request(:post, "#{@path}.json", Map.from_struct(zone)),
          {true, result} <- Util.successfull?(result),
          zone <- Util.map_to_struct(result["data"], ExKeyCDN.Zone, String.slice(@path, 0..-2)),
          limits <- Util.get_limits(headers) do
@@ -195,5 +196,4 @@ defmodule ExKeyCDN.Zone do
       {false, message} -> {:error, message}
     end
   end
-
 end

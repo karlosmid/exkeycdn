@@ -271,6 +271,56 @@ defmodule ExKeyCDN.ReportTest do
     end
   end
 
+  describe "balance/0" do
+    test "mock" do
+      expected = [
+        amount: "10",
+        limits: [rate_limit_remaining: "60", rate_limit: "60"]
+      ]
+
+      ExKeyCDN.MockReport
+      |> expect(:balance, fn -> expected end)
+
+      assert report().balance() == expected
+    end
+
+    test "mock http and ok" do
+      expected = [
+        amount: "10",
+        limits: [rate_limit_remaining: "60", rate_limit: "60"]
+      ]
+
+      mocked =
+        {:ok,
+         %{"data" => %{"amount" => "10"}, "status" => "success", "description" => "good work"},
+         [{"X-Rate-Limit-Limit", "60"}, {"X-Rate-Limit-Remaining", "60"}]}
+
+      ExKeyCDN.MockHTTP
+      |> expect(:request, fn :get, "reports/creditbalance.json", %{} -> mocked end)
+
+      assert ExKeyCDN.Report.balance() == expected
+    end
+
+    test "mock http and error" do
+      expected = {:error, :forbidden}
+
+      ExKeyCDN.MockHTTP
+      |> expect(:request, fn :get, "reports/creditbalance.json", %{} -> expected end)
+
+      assert ExKeyCDN.Report.balance() == expected
+    end
+
+    test "mock http and not successfull" do
+      expected = {:error, "error message"}
+      mocked = {:ok, %{"status" => "error", "description" => "error message"}, []}
+
+      ExKeyCDN.MockHTTP
+      |> expect(:request, fn :get, "reports/creditbalance.json", %{} -> mocked end)
+
+      assert ExKeyCDN.Report.balance() == expected
+    end
+  end
+
   defp report do
     Application.get_env(:exkeycdn, :report)
   end

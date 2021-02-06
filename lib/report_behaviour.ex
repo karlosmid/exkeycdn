@@ -52,10 +52,10 @@ defmodule ExKeyCDN.ReportBehaviour do
   @doc """
   Balance Stats
   """
-  @callback balance(ExKeyCDN.Report) ::
+  @callback balance() ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
-                {:amount, integer()}
+                {:amount, binary()}
               ]
               | {:error, binary | ExKeyCDN.ErrorResponse.t()}
 end

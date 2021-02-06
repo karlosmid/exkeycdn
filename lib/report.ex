@@ -124,4 +124,27 @@ defmodule ExKeyCDN.Report do
       {false, message} -> {:error, message}
     end
   end
+
+  @spec balance() ::
+          [
+            {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
+            {:amount, binary()}
+          ]
+          | {:error, binary | ExKeyCDN.ErrorResponse.t()}
+  @doc """
+  Balance Stats
+  """
+  @impl ExKeyCDN.ReportBehaviour
+  def balance do
+    with {:ok, result, headers} <-
+           Util.http().request(:get, "#{@path}/creditbalance.json", %{}),
+         {true, result} <- Util.successfull?(result),
+         amount <- result["data"]["amount"],
+         limits <- Util.get_limits(headers) do
+      [amount: amount, limits: limits]
+    else
+      {:error, message} -> {:error, message}
+      {false, message} -> {:error, message}
+    end
+  end
 end

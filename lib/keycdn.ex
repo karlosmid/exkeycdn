@@ -5,7 +5,7 @@ defmodule ExKeyCDN do
   https://github.com/sorentwo/braintree-elixir
 
   For general reference please see:
-  https://www.ExKeyCDN.com/api
+  https://www.keycdn.com/api
   """
 
   defmodule ConfigError do

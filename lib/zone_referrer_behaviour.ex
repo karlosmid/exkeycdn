@@ -16,7 +16,7 @@ defmodule ExKeyCDN.ZoneReferrerBehaviour do
   @doc """
   Add
   """
-  @callback add(ExKeyCDN.ZoneReferrer.t()) ::
+  @callback add(ExKeyCDN.ZoneReferrer) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
                 {:zone_referrer, ExKeyCDN.ZoneReferrer}

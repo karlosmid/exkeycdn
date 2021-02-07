@@ -26,7 +26,7 @@ defmodule ExKeyCDN.ZoneBehaviour do
   @doc """
   Add
   """
-  @callback add(ExKeyCDN.Zone.t()) ::
+  @callback add(ExKeyCDN.Zone) ::
               [
                 {:limits, [{:rate_limit_remaining, binary()}, {:rate_limit, binary}]},
                 {:zone, ExKeyCDN.Zone}

@@ -4,7 +4,7 @@ defmodule ExKeyCDN.MixProject do
   def project do
     [
       app: :exkeycdn,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -54,7 +54,7 @@ defmodule ExKeyCDN.MixProject do
       files: ["lib", "mix.exs", "README*", "LICENSE*"],
       maintainers: ["Karlo Šmid"],
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/karlosmid/exExKeyCDN"}
+      links: %{"GitHub" => "https://github.com/karlosmid/exkeycdn"}
     ]
   end
 end

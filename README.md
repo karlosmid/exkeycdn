@@ -1,6 +1,6 @@
 # ExKeyCDN
 
-Elixir client for https://www.ExKeyCDN.com/api
+Elixir client for https://www.keycdn.com/api
 
 ## Installation
 

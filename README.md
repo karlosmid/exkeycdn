@@ -427,7 +427,7 @@ Application.put_env(:exkeycdn, :zone, ExKeyCDN.MockZone)
 ## Development
 
 ```
-git checkout master
+git checkout main
 git pull
 git remote prune origin
 git branch -D branch_name

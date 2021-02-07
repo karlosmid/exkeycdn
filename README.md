@@ -424,6 +424,26 @@ Mox.defmock(ExKeyCDN.MockZone, for: ExKeyCDN.ZoneBehaviour)
 Application.put_env(:exkeycdn, :zone, ExKeyCDN.MockZone)
 ```
 
+## Development
+
+```
+git checkout master
+git pull
+git remote prune origin
+git branch -D branch_name
+git tag -a v.x.x.x -m "my version x.x.x"
+git push origin v.x.x.x
+```
+
+## Test
+
+```
+mix format
+mix credo --strict
+mix test
+mix coveralls
+```
+
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/exExKeyCDN](https://hexdocs.pm/exExKeyCDN).

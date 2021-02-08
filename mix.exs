@@ -45,7 +45,7 @@ defmodule ExKeyCDN.MixProject do
 
   defp description() do
     """
-    Library for ExKeyCDN API
+    Library for KeyCDN API
     """
   end
 

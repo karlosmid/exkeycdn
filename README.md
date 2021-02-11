@@ -424,6 +424,21 @@ Mox.defmock(ExKeyCDN.MockZone, for: ExKeyCDN.ZoneBehaviour)
 Application.put_env(:exkeycdn, :zone, ExKeyCDN.MockZone)
 ```
 
+When you test your module that calls any ExKeyCDN module, apply same technique. Add to your config file:
+
+```elixir
+config :your_application,
+  exkeycdn_zone: ExKeyCDN.Zone
+```
+
+and in your module define a private function:
+
+```elixir
+defp zone do
+  Application.get_env(:your_application, :exkeycdn_zone)
+end
+```
+
 ## Development
 
 ```
